@@ -1,0 +1,16 @@
+PODS:
+  - JosaFormatter (0.1.0)
+
+DEPENDENCIES:
+  - JosaFormatter (from `../`)
+
+EXTERNAL SOURCES:
+  JosaFormatter:
+    :path: ../
+
+SPEC CHECKSUMS:
+  JosaFormatter: 393a50b355b4b7b6f0694b5a3bd3cb6f381ced55
+
+PODFILE CHECKSUM: cec76b542426394607eb984bd553d7df05de6e32
+
+COCOAPODS: 1.2.1

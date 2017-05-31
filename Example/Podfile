@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'JosaFormatter_Example' do
+  pod 'JosaFormatter', :path => '../'
+
+  target 'JosaFormatter_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
