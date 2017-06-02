@@ -67,13 +67,8 @@ var text = josaFormatter.format("%s을 구매하시겠습니까?", "Office 2000"
 
 
 // EnglishNumberKorStyleJongSungDetector 대신 EnglishNumberJongSungDetector를 등록
-var jongSungDetectors = josaFormatter.getJongSungDetectors();
-for (int i = 0; i < jongSungDetectors.size(); ++i) {
-    JosaFormatter.JongSungDetector jongSungDetector = jongSungDetectors.get(i);
-    if (jongSungDetector instanceof JosaFormatter.EnglishNumberKorStyleJongSungDetector) {
-        jongSungDetectors.set(i, new JosaFormatter.EnglishNumberJongSungDetector());
-        break;
-    }
+josaFormatter.jongSungDetectors = josaFormatter.jongSungDetectors.map {
+    $0 is JosaFormatter.EnglishNumberKorStyleJongSungDetector ? JosaFormatter.EnglishNumberJongSungDetector() : $0
 }
 
 var text = josaFormatter.format("%@을 구매하시겠습니까?", "Office 2000"));
