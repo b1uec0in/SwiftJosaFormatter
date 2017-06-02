@@ -233,8 +233,6 @@ open class JosaFormatter {
             readText = readText.replacingOccurrences(of: readingRule.key, with: readingRule.value)
         }
         
-        var skipCount = 0
-        
         var index = readText.length - 1;
         for i in (0..<readText.length).reversed() {
             index = i
@@ -408,7 +406,10 @@ open class JosaFormatter {
     // 영문+숫자를 미국식으로 읽기 ex) MP3, iPhone4, iOS8.3 (iOS eight point three), Office2003 (Office two thousand three)
     // 일반적으로 영문+숫자라도 11 이상은 그냥 한글로 읽는 경우가 많아서 적합하지 않을 수 있음.
     public class EnglishNumberJongSungDetector : JongSungDetector {
+ 
         
+        public override init() {
+        }
         public static func parse(_ str:String) -> ParseResult{
             let parseResult = ParseResult()
             var isSpaceFound = false

@@ -14,6 +14,13 @@ class Tests: XCTestCase {
         super.tearDown()
     }
     
+    func testPerformanceExample() {
+        // This is an example of a performance test case.
+        self.measure() {
+            // Put the code you want to measure the time of here.
+        }
+    }
+    
     func testExample() {
         XCTAssertEqual("(폰)을", KoreanUtils.format("(%@)를", "폰"))
        
@@ -94,7 +101,7 @@ class Tests: XCTestCase {
 
     }
     
-    func _testEnglishJongSungDetector()  {
+    func testEnglishJongSungDetector()  {
         
         // 받침 있는 경우
         let jongSungSample :[String] = [
@@ -120,12 +127,24 @@ class Tests: XCTestCase {
             XCTAssertEqual(str + "는", KoreanUtils.format("%@은", str))
         }
     }
-    
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure() {
-            // Put the code you want to measure the time of here.
+
+    func testEnglishNumberJongSungDetector() {
+        // 영문+숫자인 경우 항상 숫자를 영어로 읽도록 함.
+        
+        let josaFormatter = JosaFormatter()
+        
+        josaFormatter.jongSungDetectors = josaFormatter.jongSungDetectors.map {
+            $0 is JosaFormatter.EnglishNumberKorStyleJongSungDetector ? JosaFormatter.EnglishNumberJongSungDetector() : $0
         }
+        
+        XCTAssertEqual("MP3는 이미 사용중입니다.", josaFormatter.format("%@는 이미 사용중입니다.", "MP3"));
+        XCTAssertEqual("MP3는 이미 사용중입니다.", josaFormatter.format("%@은 이미 사용중입니다.", "MP3"));
+        
+        XCTAssertEqual("OS10은 이미 사용중입니다.", josaFormatter.format("%@은 이미 사용중입니다.", "OS10"));
+        XCTAssertEqual("Office2000는 이미 사용중입니다.", josaFormatter.format("%@은 이미 사용중입니다.", "Office2000"));
+        XCTAssertEqual("Office2010은 이미 사용중입니다.", josaFormatter.format("%@는 이미 사용중입니다.", "Office2010"));
+        XCTAssertEqual("WD-40는 이미 사용중입니다.", josaFormatter.format("%@는 이미 사용중입니다.", "WD-40"));
+        
+        XCTAssertEqual("iOS8.3는 이미 사용중입니다.", josaFormatter.format("%@는 이미 사용중입니다.", "iOS8.3"));
     }
-    
 }
