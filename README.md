@@ -32,7 +32,7 @@ pod "JosaFormatter"
 * 한글 뿐만 아니라 영어, 숫자, 한자, 일본어 등도 처리가 가능합니다.
 * 조사 앞에 인용 부호나 괄호가 있어도 동작합니다.
 ```java
-KoreanUtils.format("'%s'는 사용중인 닉네임 입니다.", nickName);
+KoreanUtils.format("'%@'는 사용중인 닉네임입니다.", nickName);
 ```
 * Detector를 직접 등록하거나 우선 순위 등을 조정할 수 있습니다. (JongSungDetector 클래스 순서 참고)
 
@@ -62,7 +62,7 @@ KoreanUtils.format("'%s'는 사용중인 닉네임 입니다.", nickName);
 
 ```swift
 var josaFormatter = JosaFormatter()
-var text = josaFormatter.format("%s을 구매하시겠습니까?", "Office 2000"));
+var text = josaFormatter.format("%@을 구매하시겠습니까?", "Office 2000"));
 // Office 2000을 구매하시겠습니까? -> 기본 설정은 '오피스 이천'으로 읽도록 되어 있음.
 
 
