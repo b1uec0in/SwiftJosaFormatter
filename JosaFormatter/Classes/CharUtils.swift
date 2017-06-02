@@ -2,31 +2,72 @@
 //  CharUtils.swift
 //  JosaFormatter
 //
-//  Created by 1100388 on 5/26/17.
-//  Copyright © 2017 1100388. All rights reserved.
+//  Created by Bae Yong-Ju on 2017-05-17.
+//
 //
 
 import Foundation
 
-extension CharacterSet {
-    //    func hangulFullChars() ->CharacterSet {
-    //        return CharacterSet(charactersIn: UnicodeScalar("\u{ac00}")...UnicodeScalar("\u{d7af}"))
-    //    }
-    
-    public static var hangulFullChars : CharacterSet {
+
+public extension CharacterSet {
+    public static var hangulSyllables : CharacterSet {
         get {
-            return CharacterSet(charactersIn: UnicodeScalar("\u{ac00}")...UnicodeScalar("\u{d7af}"))
+            struct Static {
+                static let characterSet = CharacterSet(charactersIn: "\u{ac00}"..."\u{d7a3}") // "가"..."힣"
+            }
+            return Static.characterSet
         }
     }
     
-    public static func isWhitespace (_ ch :Character ) -> Bool {
-        return String(ch).rangeOfCharacter(from: CharacterSet.whitespacesAndNewlines) != nil
+    public static var asciiAlphas : CharacterSet {
+        get {
+            struct Static {
+                static let characterSet = CharacterSet(charactersIn: "a"..."z").union(CharacterSet(charactersIn: "A"..."Z"))
+            }
+            return Static.characterSet
+        }
     }
+    
+    public static var asciiNumbers : CharacterSet {
+        get {
+            struct Static {
+                static let characterSet = CharacterSet(charactersIn: "0"..."9")
+            }
+            return Static.characterSet
+        }
+    }
+    
+    public static var hiraganaCharacters : CharacterSet {
+        get {
+            struct Static {
+                static let characterSet = CharacterSet(charactersIn: "\u{3040}"..."\u{309F}") // "ぁ"..."ゟ"
+            }
+            return Static.characterSet
+        }
+    }
+    
+    public static var katakanaCharacters : CharacterSet {
+        get {
+            struct Static {
+                static let characterSet = CharacterSet(charactersIn: "\u{30A0}"..."\u{30FF}") // "゠"..."ヿ"
+            }
+            return Static.characterSet
+        }
+    }
+    
+    public static var japaneseCharacters : CharacterSet {
+        get {
+            struct Static {
+                static let characterSet = CharacterSet.hiraganaCharacters.union(CharacterSet.katakanaCharacters)
+            }
+            return Static.characterSet
+        }
+    }
+
 }
 
 class CharUtils {
-    public static func hasHangulJongSung (_ ch: Character ) -> Bool {
-        var str = String(ch)
-        return str.rangeOfCharacter(from: CharacterSet.hangulFullChars) != nil && (str.unicodeScalars[str.unicodeScalars.startIndex].value - 0xAC00) % 28 > 0;
+    public static func hasHangulJongSung (_ ch: UnicodeScalar ) -> Bool {
+        return CharacterSet.hangulSyllables.contains(ch) && (ch.value - 0xAC00) % 28 > 0;
     }
 }
