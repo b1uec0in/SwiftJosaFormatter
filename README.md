@@ -6,7 +6,7 @@
 [![CI Status](http://img.shields.io/travis/b1uec0in/SwiftJosaFormatter.svg?style=flat)](https://travis-ci.org/b1uec0in/SwiftJosaFormatter)
 [![Version](https://img.shields.io/cocoapods/v/JosaFormatter.svg?style=flat)](http://cocoapods.org/pods/JosaFormatter)
 [![License](https://img.shields.io/cocoapods/l/JosaFormatter.svg?style=flat)](http://cocoapods.org/pods/JosaFormatter)
-[![Platform](https://img.shields.io/cocoapods/p/JosaFormatter.svg?style=flat)](http://cocoapods.org/pods/JosaFormatter)
+[![Language: swift](https://img.shields.io/badge/language-swift-84acfe.svg)](https://github.com/b1uec0in/SwiftJosaFormatter)
 
 ## Example
 
