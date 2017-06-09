@@ -1,12 +1,12 @@
-# JosaFormatter
-String.format을 확장해 받침에 따라 조사(은,는,이,가,을,를 등)를 교정합니다.
+# SwiftJosaFormatter
+받침에 따라 조사(은,는,이,가,을,를 등)를 교정할 수 있는 String.format과 유사한 함수를 제공합니다.
 
 ***아직 읽는 방법에 대한 규칙을 찾지 못한 부분이 많습니다. 오동작이 발견되거나 좀 더 나은 규칙이 있다면 꼭!! 알려주세요.***
 
-[![CI Status](http://img.shields.io/travis/b1uec0in/JosaFormatter.svg?style=flat)](https://travis-ci.org/b1uec0in/JosaFormatter)
+[![CI Status](http://img.shields.io/travis/b1uec0in/SwiftJosaFormatter.svg?style=flat)](https://travis-ci.org/b1uec0in/SwiftJosaFormatter)
 [![Version](https://img.shields.io/cocoapods/v/JosaFormatter.svg?style=flat)](http://cocoapods.org/pods/JosaFormatter)
 [![License](https://img.shields.io/cocoapods/l/JosaFormatter.svg?style=flat)](http://cocoapods.org/pods/JosaFormatter)
-[![Platform](https://img.shields.io/cocoapods/p/JosaFormatter.svg?style=flat)](http://cocoapods.org/pods/JosaFormatter)
+[![Language: swift](https://img.shields.io/badge/language-swift-84acfe.svg)](https://github.com/b1uec0in/SwiftJosaFormatter)
 
 ## Example
 
@@ -32,7 +32,7 @@ pod "JosaFormatter"
 * 한글 뿐만 아니라 영어, 숫자, 한자, 일본어 등도 처리가 가능합니다.
 * 조사 앞에 인용 부호나 괄호가 있어도 동작합니다.
 ```java
-KoreanUtils.format("'%s'는 사용중인 닉네임 입니다.", nickName);
+KoreanUtils.format("'%@'는 사용중인 닉네임입니다.", nickName);
 ```
 * Detector를 직접 등록하거나 우선 순위 등을 조정할 수 있습니다. (JongSungDetector 클래스 순서 참고)
 
@@ -62,7 +62,7 @@ KoreanUtils.format("'%s'는 사용중인 닉네임 입니다.", nickName);
 
 ```swift
 var josaFormatter = JosaFormatter()
-var text = josaFormatter.format("%s을 구매하시겠습니까?", "Office 2000"));
+var text = josaFormatter.format("%@을 구매하시겠습니까?", "Office 2000"));
 // Office 2000을 구매하시겠습니까? -> 기본 설정은 '오피스 이천'으로 읽도록 되어 있음.
 
 
