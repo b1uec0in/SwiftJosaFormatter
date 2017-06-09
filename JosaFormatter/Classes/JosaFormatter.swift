@@ -67,7 +67,7 @@ open class JosaFormatter {
             let results = regex.matches(in: format, options: [.reportCompletion], range: NSMakeRange(0, nsFormat.length))
             
             
-            var resultString = format.substring(to: format.index(format.startIndex, offsetBy: results[0].range.location))
+            var resultString = format.substring(0, results[0].range.location)
             
             
             for index in 0..<results.count {
@@ -79,19 +79,19 @@ open class JosaFormatter {
                 
                 var argIndex = index
                 if (indexRange.length > 0) {
-                    if let number = Int(format.substring(with: format.index(format.startIndex, offsetBy: indexRange.location)..<format.index(format.startIndex, offsetBy: indexRange.location + indexRange.length - 1))) {
+                    if let number = Int(format.substring(indexRange.location, indexRange.location + indexRange.length - 1)) {
                         argIndex = number - 1
                     }
                 }
                 
-                let singleFormat = "%" + format.substring(with: format.index(format.startIndex, offsetBy: typeRange.location)..<format.index(format.startIndex, offsetBy: typeRange.location + typeRange.length))
+                let singleFormat = "%" + format.substring(typeRange.location, typeRange.location + typeRange.length)
                 let argString = String(format:singleFormat, locale: locale, arguments[argIndex])
                 
                 var nextString = ""
                 if index < results.count - 1 {
-                    nextString = format.substring(with: format.index(format.startIndex, offsetBy: range.location + range.length)..<format.index(format.startIndex, offsetBy: results[index+1].range.location))
+                    nextString = format.substring(range.location + range.length, results[index+1].range.location)
                 } else {
-                    nextString = format.substring(from: format.index(format.startIndex, offsetBy: range.location + range.length))
+                    nextString = format.substring(range.location + range.length)
                 }
                 
                 
