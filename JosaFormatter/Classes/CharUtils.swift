@@ -10,6 +10,7 @@ import Foundation
 
 
 public extension CharacterSet {
+    /// 한글 음절 문자 집합 (가-힣)
     public static var hangulSyllables : CharacterSet {
         get {
             struct Static {
@@ -19,6 +20,7 @@ public extension CharacterSet {
         }
     }
     
+    /// ASCII 영문 문자 집합 (a-zA-Z)
     public static var asciiAlphas : CharacterSet {
         get {
             struct Static {
@@ -28,6 +30,7 @@ public extension CharacterSet {
         }
     }
     
+    /// ASCII 숫자 (0-9)
     public static var asciiNumbers : CharacterSet {
         get {
             struct Static {
@@ -36,7 +39,8 @@ public extension CharacterSet {
             return Static.characterSet
         }
     }
-    
+
+    /// 일본어 - 히라가나 문자 집합
     public static var hiraganaCharacters : CharacterSet {
         get {
             struct Static {
@@ -46,6 +50,7 @@ public extension CharacterSet {
         }
     }
     
+    /// 일본어 - 카타가나 문자 집합
     public static var katakanaCharacters : CharacterSet {
         get {
             struct Static {
@@ -55,6 +60,7 @@ public extension CharacterSet {
         }
     }
     
+    /// 일본어 문자 집합 (히라가나 + 카타가나)
     public static var japaneseCharacters : CharacterSet {
         get {
             struct Static {
@@ -67,7 +73,8 @@ public extension CharacterSet {
 }
 
 class CharUtils {
+    /// 한글 유니코드에 받침(종성)이 있는지 검사합니다.
     public static func hasHangulJongSung (_ ch: UnicodeScalar ) -> Bool {
-        return CharacterSet.hangulSyllables.contains(ch) && (ch.value - 0xAC00) % 28 > 0;
+        return CharacterSet.hangulSyllables.contains(ch) && (ch.value - 0xAC00) % 28 > 0
     }
 }

@@ -20,7 +20,7 @@ open class JosaFormatter {
     ]
     
     
-    // 종성(받침) 검사 필터. 순서대로 동작함.
+    /// 종성(받침) 검사 필터. 순서대로 동작합니다.
     public var jongSungDetectors = [
         HangulJongSungDetector(),
         EnglishCapitalJongSungDetector(),
@@ -39,23 +39,28 @@ open class JosaFormatter {
     private var readingRules = [
         "아이폰" : "iPhone",
         "갤럭시" : "Galaxy",
-        "넘버": "number"
+        "넘버": "number",
+        "레벨": "level",
     ]
     
     public init() {}
     
+    /// 현재 locale을 사용하여 format한 문자열을 리턴합니다.
     public func format(_ format: String, _ arguments: CVarArg...) -> String {
         return self.format(format, arguments)
     }
     
+    /// 현재 locale을 사용하여 format한 문자열을 리턴합니다.
     public func format(_ format: String, _ arguments: [CVarArg]) -> String {
         return self.format(format, locale: Locale.current, arguments)
     }
     
+    /// 주어진 locale을 사용하여 format한 문자열을 리턴합니다.
     public func format(_ format: String, locale: Locale?, _ arguments: CVarArg...) -> String {
         return self.format(format, locale: locale, arguments)
     }
     
+    /// 주어진 locale을 사용하여 format한 문자열을 리턴합니다.
     public func format(_ format: String, locale: Locale?, _ arguments: [CVarArg]) -> String {
         if arguments.count > 0 {
             let pattern = "%(\\d+\\$)?([-#+ 0,(\\<]*)?(\\d+)?(\\.\\d+)?([tT])?([a-zA-Z%@])"
@@ -106,41 +111,45 @@ open class JosaFormatter {
         }
     }
     
-    
-    
-    func indexOfJosa(_ str:String, josa:String) -> Int {
-        var index : Int;
-        var searchFromIndex = 0;
-        let strLength = str.length;
-        let josaLength = josa.length;
+    /// 문자열 내에서 조사의 위치를 리턴합니다. 조사 뒤에 공백이 있거나 문자열이 조사로 끝난 경우만 조사로 인정합니다.
+    ///
+    /// - Parameters:
+    ///   - str: 조사가 포함된 문자열
+    ///   - josa: 검색할 조사 문자열
+    /// - Returns: 조사의 위치를 리턴합니다. 조사가 검색되지 않은 경우 -1을 리턴합니다.
+    private func indexOfJosa(_ str:String, josa:String) -> Int {
+        var index : Int
+        var searchFromIndex = 0
+        let strLength = str.length
+        let josaLength = josa.length
         repeat {
-            index = str.indexOf(josa, fromIndex: searchFromIndex);
+            index = str.indexOf(josa, fromIndex: searchFromIndex)
             
             if index >= 0 {
-                let josaNext = index + josaLength;
+                let josaNext = index + josaLength
                 
                 // 조사로 끝나거나 뒤에 공백이 있어야 함.
                 if (josaNext < strLength) {
                     if (CharacterSet.whitespacesAndNewlines.contains(str.unicodeScalarAt(josaNext))) {
-                        return index;
+                        return index
                     }
                 } else {
-                    return index;
+                    return index
                 }
             } else {
-                return -1;
+                return -1
             }
-            searchFromIndex = index + josaLength;
-        } while(searchFromIndex < strLength);
+            searchFromIndex = index + josaLength
+        } while(searchFromIndex < strLength)
         
-        return -1;
+        return -1
     }
     
     
-    func getJosaModifiedString(_ previous:String, str:String) -> String {
+    private func getJosaModifiedString(_ previous:String, _ josaString:String) -> String {
         
         if (previous.length == 0) {
-            return str
+            return josaString
         }
         
         var matchedJosaPair:(key:String, value:String)?
@@ -148,113 +157,132 @@ open class JosaFormatter {
         
         var searchStr:String?
         for josaPair in JosaFormatter.josaPairs {
-            let firstIndex = indexOfJosa(str, josa: josaPair.key);
-            let secondIndex = indexOfJosa(str, josa: josaPair.value);
+            let firstIndex = indexOfJosa(josaString, josa: josaPair.key)
+            let secondIndex = indexOfJosa(josaString, josa: josaPair.value)
             
             if (firstIndex >= 0 && secondIndex >= 0) {
                 if (firstIndex < secondIndex) {
-                    josaIndex = firstIndex;
-                    searchStr = josaPair.key;
+                    josaIndex = firstIndex
+                    searchStr = josaPair.key
                 } else {
-                    josaIndex = secondIndex;
-                    searchStr = josaPair.value;
+                    josaIndex = secondIndex
+                    searchStr = josaPair.value
                 }
             } else if (firstIndex >= 0) {
-                josaIndex = firstIndex;
-                searchStr = josaPair.key;
+                josaIndex = firstIndex
+                searchStr = josaPair.key
             } else if (secondIndex >= 0) {
-                josaIndex = secondIndex;
-                searchStr = josaPair.value;
+                josaIndex = secondIndex
+                searchStr = josaPair.value
             }
             
-            if (josaIndex >= 0 && isEndSkipText(str, begin:0, end:josaIndex)) {
-                matchedJosaPair = josaPair;
-                break;
+            if (josaIndex >= 0 && isEndSkipText(josaString, begin:0, end:josaIndex)) {
+                matchedJosaPair = josaPair
+                break
             }
         }
         
         if (matchedJosaPair != nil) {
             
-            let readText = getReadText(previous);
+            let readText = getReadText(previous)
             
             for jongSungDetector in jongSungDetectors {
                 if (jongSungDetector.canHandle(readText)) {
-                    return replaceStringByJongSung(str, josaPair:matchedJosaPair!, hasJongSung:jongSungDetector.hasJongSung(readText));
+                    return replaceStringByJongSung(josaString, josaPair:matchedJosaPair!, hasJongSung:jongSungDetector.hasJongSung(readText))
                 }
             }
             
             // 없으면 괄호 표현식을 사용한다. ex) "???을(를) 찾을 수 없습니다."
             
             let replaceStr = "\(matchedJosaPair!.key)(\(matchedJosaPair!.value))"
-            return str.substring(0, josaIndex) + replaceStr + str.substring(josaIndex + searchStr!.length)
+            return josaString.substring(0, josaIndex) + replaceStr + josaString.substring(josaIndex + searchStr!.length)
         }
         
-        return str
+        return josaString
     }
     
-    public func join(_ str1: String, _ str2: String) -> String {
-        return str1 + getJosaModifiedString(str1, str:str2);
+    /// 단어에 따라 조사를 교정하여 결합한 문자열을 리턴합니다.
+    ///
+    /// - Parameters:
+    ///   - string: 조사 교정을 판단하기 위한 조사 앞의 단어.
+    ///   - josaString: 교정할 조사로 시작하는 문자열.
+    /// - Returns: 교정된 조사로 결합한 문자열. 
+    /// 예) 
+    ///     formatter.join("사람", "가") : "사람은"
+    public func join(_ string: String, _ josaString: String) -> String {
+        return string + getJosaModifiedString(string, josaString)
     }
     
     
-    public func replaceStringByJongSung(_ str:String, josaPair: (key:String, value:String), hasJongSung:Bool) -> String {
+    private func replaceStringByJongSung(_ str:String, josaPair: (key:String, value:String), hasJongSung:Bool) -> String {
         // 잘못된 것을 찾아야 하므로 반대로 찾는다. 종성이 있으면 종성이 없을 때 사용하는 조사가 사용 되었는지 찾는다.
-        let searchStr = hasJongSung ? josaPair.value : josaPair.key;
-        let replaceStr = hasJongSung ? josaPair.key : josaPair.value;
+        let searchStr = hasJongSung ? josaPair.value : josaPair.key
+        let replaceStr = hasJongSung ? josaPair.key : josaPair.value
         let josaIndex = str.indexOf(searchStr)
         
         if josaIndex >= 0 && isEndSkipText(str, begin:0, end:josaIndex) {
             return str.substring(0, josaIndex) + replaceStr + str.substring(josaIndex + searchStr.length)
         }
         
-        return str;
+        return str
     }
-    //
     
-    public func isEndSkipText(_ str:String, begin:Int, end:Int) -> Bool {
+    private func isEndSkipText(_ str:String, begin:Int, end:Int) -> Bool {
         for i in begin..<end {
             if (!isEndSkipText(str.unicodeScalarAt(i))) {
-                return false;
+                return false
             }
         }
-        return true;
+        return true
     }
     
-    // 조사 앞에 붙는 문자중 무시할 문자들. ex) "(%s)으로"
-    public func isEndSkipText(_ ch : UnicodeScalar) -> Bool{
-        let skipChars = CharacterSet(charactersIn:"\"')]}>");
+    /// 조사 앞에 붙는 문자중 무시할 문자들을 확인합니다. 예) 문자열 "(%s)으로" 에서 '으로'앞의 괄호')'는 무시하고 '으로'를 조사로 인정함.
+    private func isEndSkipText(_ ch : UnicodeScalar) -> Bool{
+        let skipChars = CharacterSet(charactersIn:"\"')]}>")
         
         return skipChars.contains(ch)
     }
     
+    /// 읽는 규칙에 따라 변경된 문자열을 리턴합니다.
     public func getReadText(_ str: String ) -> String {
         var readText = str
         for readingRule in readingRules {
             readText = readText.replacingOccurrences(of: readingRule.key, with: readingRule.value)
         }
         
-        var index = readText.length - 1;
+        var index = readText.length - 1
         for i in (0..<readText.length).reversed() {
             index = i
             let ch = readText.unicodeScalarAt(i)
             
             if !isEndSkipText(ch) {
-                break;
+                break
             }
         }
         
-        return readText.substring(0, index + 1);
+        return readText.substring(0, index + 1)
     }
-    
+
+    /// 읽는 규칙을 추가합니다. 주로 외국어를 한국어로 표기한 단어들을 추가합니다. 예) 아이폰:iPhone, 넘버:number, 레벨:level
     public func addReadRule(_ originalText:String, _ replaceText: String) {
         readingRules[originalText] = replaceText
     }
     
+    /// 받침(종성) 확인 필터 기본 클래스
     public class JongSungDetector {
+        /// 처리 가능한 문자열인지 확인합니다.
+        ///
+        /// - Parameter str: 받침(종성) 여부를 확인할 문자열.
+        /// - Returns: 처리 가능한 경우 true, false를 리턴하면 다음 필터를 사용하여 확인합니다.
         func canHandle(_ str:String ) ->Bool {
             return false
         }
         
+        /// 받침(종성)이 존재하는 지 확인합니다.
+        /// - Warning: 이 함수는 canHandle 함수가 true를 리턴한 경우에만 호출됩니다.
+        ///
+        /// - Parameter str: 받침(종성) 여부를 확인할 문자열.
+        /// - Returns: 받침(종성)의 유무를 리턴합니다.
         func hasJongSung(_ str :String ) -> Bool {
             return false
         }
@@ -265,14 +293,14 @@ open class JosaFormatter {
         
         public override func canHandle(_ str : String) -> Bool{
             if let lastChar = str.unicodeScalars.last {
-                return CharacterSet.hangulSyllables.contains(lastChar);
+                return CharacterSet.hangulSyllables.contains(lastChar)
             }
             return false
         }
         
         public override func hasJongSung(_ str:String) -> Bool{
             let lastChar = str.unicodeScalars.last!
-            return CharUtils.hasHangulJongSung(lastChar);
+            return CharUtils.hasHangulJongSung(lastChar)
         }
     }
     
@@ -285,7 +313,7 @@ open class JosaFormatter {
                 }
             }
             
-            return false;
+            return false
         }
         
         public override func hasJongSung(_ str:String) -> Bool{
@@ -300,15 +328,28 @@ open class JosaFormatter {
     
     public class EnglishJongSungDetector : JongSungDetector {
         
+        private var customRules = [
+            "app": true,
+            "god": true,
+            "good": true,
+            "pod": true,
+            "bag": true,
+            "big": true,
+            "gig": true,
+            "chocolate": true,
+            "root": false,
+            "boot": false,
+            "check": false,
+            ]
         
         public override func canHandle(_ str : String) -> Bool{
             if let lastChar = str.unicodeScalars.last {
                 
                 // q, j 등으로 끝나는 단어는 알려지지 않음.
-                let unknownWordSuffixs = CharacterSet(charactersIn:"qj");
+                let unknownWordSuffixs = CharacterSet(charactersIn:"qj")
                 
                 if unknownWordSuffixs.contains(lastChar) {
-                    return false;
+                    return false
                 }
                 
                 return CharacterSet.asciiAlphas.contains(lastChar)
@@ -316,90 +357,87 @@ open class JosaFormatter {
             return false
         }
         
+        public func addCustomRules(_ suffix:String, hasJongSung:Bool) {
+            customRules[suffix] = hasJongSung
+        }
         
-        public override func hasJongSung(_ str:String) -> Bool{
-            let lastChar1 = str.characters.last!
+        
+        public override func hasJongSung(_ string:String) -> Bool{
+            let str = string.lowercased()
+            
+            for rule in customRules {
+                if str.hasSuffix(rule.key) {
+                    return rule.value
+                }
+            }
+
+            let length = str.length
+            let lastChar1 = str.unicodeScalars.last!
+            
             
             // 3자 이상인 경우만 마지막 2자만 suffix로 간주.
-            var suffix:String? = nil;
-            if str.length >= 3 {
-                let lastChar2 = str.unicodeScalarAt(str.length - 2);
-                let lastChar3 = str.unicodeScalarAt(str.length - 3);
+            var suffix : String = ""
+            var lastChar2 : UnicodeScalar = "\0"
+            var lastChar3 : UnicodeScalar = "\0"
+            if length >= 3 {
+                lastChar2 = str.unicodeScalarAt(length - 2)
+                lastChar3 = str.unicodeScalarAt(length - 3)
                 
                 if (CharacterSet.asciiAlphas.contains(lastChar2) && CharacterSet.asciiAlphas.contains(lastChar3)) {
-                    suffix = (String(lastChar2) + String(lastChar1)).lowercased();
+                    suffix = String(lastChar2) + String(lastChar1)
                 }
             }
             
-            if let suffix = suffix {
-                // 마지막 1문자로 오면 항상 종성인 경우
-                let jongSungChars = "blmnp";
-                if jongSungChars.indexOf(lastChar1) >= 0 {
-                    return true;
-                }
+            if suffix.length > 0 {
+                // 끝나는 문자들로 종성 여부를 확인할 때 qj를 제외한 알파벳 22자를 기준으로 분류하면 아래와 같다.
+                let jongSungChars = "lmn" // 1. 항상 받침으로 읽음
+                let notJongSungChars = "afhiorsuvwxyz" // 2. 항상 받침으로 읽지 않음
+                let jongSungCandidateChars = "bckpt" // 3. 대체로 받침으로 읽음
+                let notJongSungCandidateChars = "deg"  // 4. 대체로 받침으로 읽지 않음
                 
-                // 마지막 1문자로 오면 항상 종성이 아닌 경우
-                let notJongSungChars = "afhiorsuvwxyz";
-                if notJongSungChars.indexOf(lastChar1) >= 0 {
-                    return false;
-                }
-                
-                // 마지막 2문자로 오면 항상 종성인 경우
-                switch (suffix) {
-                case "le",
-                     "ne",
-                     "me",
-                     "ng":
+                if (jongSungChars.indexOf(lastChar1) >= 0) {
+                    // 마지막 1문자 lmn은 항상 받침으로 읽음
                     return true
-                default: break
-                }
-                
-                // 마지막 2문자로 오면 항상 종성이 아닌 경우
-                switch (suffix) {
-                case "lc", // 크
-                "rc",
-                "sc",
-                
-                "ed", // 드
-                "nd",
-                "ld",
-                "rd",
-                
-                "lk", // 크
-                "nk",
-                "sk",
-                "rk",
-                
-                "lt", // 트
-                "nt",
-                "pt",
-                "rt",
-                "st",
-                "xt":
+                } else if (notJongSungChars.indexOf(lastChar1) >= 0) {
+                    // 마지막 1문자 afhiorsuvwxyz는 항상 받침으로 읽지 않음
                     return false
-                default: break
                 }
                 
-                // 마지막 2문자에 따라 단어별 예외 케이스가 있는 경우
-                switch (suffix) {
-                case "od":
-                    return str.hasSuffix("god") || str.hasSuffix("good") || str.hasSuffix("pod");
-                default: break
-                }
-                
-                // 나머지는 마지막 1문자를 보고 종성을 판단 한다.
-                let jongSungExtraChars = "cdkpqt";
-                if jongSungExtraChars.indexOf(lastChar1) >= 0 {
-                    return true;
+                if (jongSungCandidateChars.indexOf(lastChar1) >= 0) {
+                    // 예외 처리
+                    switch (suffix) {
+                    case "ck",
+                         "mb": // b 묵음
+                        return true
+                    default:
+                        break
+                    }
+                    
+                    // 마지막 1문자 bckpt는 모음 뒤에서는 받침으로 읽는다.
+                    let vowelChars = "aeiou"
+                    return vowelChars.indexOf(lastChar2) >= 0
+                } else if notJongSungCandidateChars.indexOf(lastChar1) >= 0 {
+                    // 마지막 1문자 deg는 대체로 받침으로 읽지 않지만, 아래의 경우는 받침으로 읽음.
+                    switch (suffix) {
+                    case "le", // ㄹ
+                        "me", // ㅁ
+                         "ne", // ㄴ
+                         "ng": // ㅇ
+                        return true
+                    default:
+                        return false
+                    }
+                } else {
+                    // unreachable condition
                 }
             } else {
                 // 1자, 2자는 약자로 간주하고 알파벳 그대로 읽음. (엘엠엔알)만 종성이 있음.
-                let jongSungChars = "lmnr";
+                let jongSungChars = "lmnr"
                 if jongSungChars.indexOf(lastChar1) >= 0 {
-                    return true;
+                    return true
                 }
             }
-            return false;
+            return false
         }
     }
     
@@ -420,9 +458,9 @@ open class JosaFormatter {
                 let ch = str.unicodeScalarAt(i)
                 
                 if (!isNumberCompleted && !isSpaceFound && CharacterSet.asciiNumbers.contains(ch)) {
-                    parseResult.isNumberFound = true;
-                    numberPartBeiginIndex = i;
-                    continue;
+                    parseResult.isNumberFound = true
+                    numberPartBeiginIndex = i
+                    continue
                 }
                 
                 if ch == "," {
@@ -466,7 +504,7 @@ open class JosaFormatter {
                 }
             }
             
-            return parseResult;
+            return parseResult
         }
         
         
@@ -489,7 +527,7 @@ open class JosaFormatter {
                 }
                 
                 // 두자리 예외 처리
-                let twoDigit = (Int) (number % 100);
+                let twoDigit = (Int) (number % 100)
                 switch (twoDigit) {
                 case 10,
                      13,
@@ -504,7 +542,7 @@ open class JosaFormatter {
                 // 1000 : thousand (x)
                 // 1000000... : million, billion, trillion (o)
                 if (number % 100000 == 0) {
-                    return true;
+                    return true
                 }
             }
             
@@ -550,7 +588,7 @@ open class JosaFormatter {
         
         
         public override func canHandle(_ str : String) -> Bool{
-            let parseResult = EnglishNumberJongSungDetector.parse(str);
+            let parseResult = EnglishNumberJongSungDetector.parse(str)
             
             return parseResult.isNumberFound && parseResult.isEnglishFound && !parseResult.isFloat && parseResult.number <= 10
             
@@ -558,7 +596,7 @@ open class JosaFormatter {
         
         
         public override func hasJongSung(_ str:String) -> Bool{
-            let parseResult = EnglishNumberJongSungDetector.parse(str);
+            let parseResult = EnglishNumberJongSungDetector.parse(str)
             let number = Int64(parseResult.number)
             switch (number) {
             case 1,
@@ -578,15 +616,15 @@ open class JosaFormatter {
     public class NumberJongSungDetector : JongSungDetector {
         
         public override func canHandle(_ str : String) -> Bool{
-            let parseResult = EnglishNumberJongSungDetector.parse(str);
+            let parseResult = EnglishNumberJongSungDetector.parse(str)
             
-            return parseResult.isNumberFound;
+            return parseResult.isNumberFound
             
         }
         
         
         public override func hasJongSung(_ str:String) -> Bool{
-            let parseResult = EnglishNumberJongSungDetector.parse(str);
+            let parseResult = EnglishNumberJongSungDetector.parse(str)
             
             if (!parseResult.isFloat) {
                 let number = Int64(parseResult.number)
@@ -610,7 +648,7 @@ open class JosaFormatter {
                 }
             }
             
-            return false;
+            return false
         }
     }
     
@@ -619,16 +657,16 @@ open class JosaFormatter {
     public class HanjaJongSungDetector : JongSungDetector {
         public override func canHandle(_ str : String) -> Bool{
             if let lastChar = str.unicodeScalars.last {
-                return HanjaMap.canHandle(lastChar);
+                return HanjaMap.canHandle(lastChar)
             }
-            return false;
+            return false
         }
         
         
         public override func hasJongSung(_ str:String) -> Bool{
             let lastChar = str.unicodeScalars.last!
-            let hangulChar = HanjaMap.toHangul(lastChar);
-            return CharUtils.hasHangulJongSung(hangulChar);
+            let hangulChar = HanjaMap.toHangul(lastChar)
+            return CharUtils.hasHangulJongSung(hangulChar)
         }
     }
     
@@ -639,7 +677,7 @@ open class JosaFormatter {
             if let lastChar = str.unicodeScalars.last {
                 return CharacterSet.japaneseCharacters.contains(lastChar)
             }
-            return false;
+            return false
         }
         
         
@@ -647,7 +685,7 @@ open class JosaFormatter {
             let lastChar = str.characters.last!
             
             // ん, ン 로 끝나면 받침이 있는 것으로 간주
-            return lastChar == "ん" || lastChar == "ン";
+            return lastChar == "ん" || lastChar == "ン"
         }
     }
 }
