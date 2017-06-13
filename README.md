@@ -5,7 +5,7 @@
 
 [![CI Status](http://img.shields.io/travis/b1uec0in/SwiftJosaFormatter.svg?style=flat)](https://travis-ci.org/b1uec0in/SwiftJosaFormatter)
 [![Version](https://img.shields.io/cocoapods/v/JosaFormatter.svg?style=flat)](http://cocoapods.org/pods/JosaFormatter)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![License](https://img.shields.io/cocoapods/l/JosaFormatter.svg?style=flat)](http://cocoapods.org/pods/JosaFormatter)
 [![Language: java|swift](https://img.shields.io/badge/language-java|swift-84acfe.svg)](#repositories)
 
 ## Example
