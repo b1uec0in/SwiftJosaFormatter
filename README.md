@@ -5,8 +5,8 @@
 
 [![CI Status](http://img.shields.io/travis/b1uec0in/SwiftJosaFormatter.svg?style=flat)](https://travis-ci.org/b1uec0in/SwiftJosaFormatter)
 [![Version](https://img.shields.io/cocoapods/v/JosaFormatter.svg?style=flat)](http://cocoapods.org/pods/JosaFormatter)
-[![License](https://img.shields.io/cocoapods/l/JosaFormatter.svg?style=flat)](http://cocoapods.org/pods/JosaFormatter)
-[![Language: swift](https://img.shields.io/badge/language-swift-84acfe.svg)](https://github.com/b1uec0in/SwiftJosaFormatter)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Language: java|swift](https://img.shields.io/badge/language-java|swift-84acfe.svg)](#repositories)
 
 ## Example
 
@@ -85,7 +85,20 @@ var text = KoreanUtils.format("%@을 구매하시겠습니까?", "베가 베타 
 // 베가 베타 3를 구매하시겠습니까?
 ```
 
+### Repositories
+* Java version<br/>
+https://github.com/b1uec0in/JosaFormatter
+
+* Swift version<br/>
+https://github.com/b1uec0in/SwiftJosaFormatter
+
+* Android Sample<br/>
+https://github.com/b1uec0in/AndroidJosaFormatter
+
 ### Reference
+* 한국어 속 영어 읽기<br/>
+http://blog.naver.com/b1uec0in/221025080633
+
 * 한글 받침에 따라 '을/를' 구분 <br/>
 http://gun0912.tistory.com/65
 
@@ -97,3 +110,4 @@ http://kangwoo.tistory.com/33
 
 * suffix로 영어 단어 찾기 <br/>
 http://www.litscape.com/word_tools/ends_with.php
+
