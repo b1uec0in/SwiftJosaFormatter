@@ -105,19 +105,27 @@ class Tests: XCTestCase {
         
         // 받침 있는 경우
         let jongSungSample :[String] = [
+            "job",
+            "bomb",
             "apple",
             "god",
             "game",
             "gone",
-            ];
+            "truck",
+            "foot",
+            ]
         
         // 받침 없는 경우
         let notJongSungSample:[String] = [
+            "herb",
             "risk",
             "tank",
+            "craft",
+            "root",
             "text",
             "wood",
-            ];
+            "rapid",
+            ]
         
         
         for str in jongSungSample {
@@ -137,14 +145,14 @@ class Tests: XCTestCase {
             $0 is JosaFormatter.EnglishNumberKorStyleJongSungDetector ? JosaFormatter.EnglishNumberJongSungDetector() : $0
         }
         
-        XCTAssertEqual("MP3는 이미 사용중입니다.", josaFormatter.format("%@는 이미 사용중입니다.", "MP3"));
-        XCTAssertEqual("MP3는 이미 사용중입니다.", josaFormatter.format("%@은 이미 사용중입니다.", "MP3"));
+        XCTAssertEqual("MP3는 이미 사용중입니다.", josaFormatter.format("%@는 이미 사용중입니다.", "MP3"))
+        XCTAssertEqual("MP3는 이미 사용중입니다.", josaFormatter.format("%@은 이미 사용중입니다.", "MP3"))
         
-        XCTAssertEqual("OS10은 이미 사용중입니다.", josaFormatter.format("%@은 이미 사용중입니다.", "OS10"));
-        XCTAssertEqual("Office2000는 이미 사용중입니다.", josaFormatter.format("%@은 이미 사용중입니다.", "Office2000"));
-        XCTAssertEqual("Office2010은 이미 사용중입니다.", josaFormatter.format("%@는 이미 사용중입니다.", "Office2010"));
-        XCTAssertEqual("WD-40는 이미 사용중입니다.", josaFormatter.format("%@는 이미 사용중입니다.", "WD-40"));
+        XCTAssertEqual("OS10은 이미 사용중입니다.", josaFormatter.format("%@은 이미 사용중입니다.", "OS10"))
+        XCTAssertEqual("Office2000는 이미 사용중입니다.", josaFormatter.format("%@은 이미 사용중입니다.", "Office2000"))
+        XCTAssertEqual("Office2010은 이미 사용중입니다.", josaFormatter.format("%@는 이미 사용중입니다.", "Office2010"))
+        XCTAssertEqual("WD-40는 이미 사용중입니다.", josaFormatter.format("%@는 이미 사용중입니다.", "WD-40"))
         
-        XCTAssertEqual("iOS8.3는 이미 사용중입니다.", josaFormatter.format("%@는 이미 사용중입니다.", "iOS8.3"));
+        XCTAssertEqual("iOS8.3는 이미 사용중입니다.", josaFormatter.format("%@는 이미 사용중입니다.", "iOS8.3"))
     }
 }

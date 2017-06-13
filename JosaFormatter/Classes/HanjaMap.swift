@@ -1,24 +1,24 @@
 //
 //  HanjaMap.swift
-//  Pods
 //
-//  Created by Bae Yong-Ju on 6/1/17.
+//  Created by Bae Yong-Ju on 2017-06-01.
 //
 //
 
 import Foundation
 
-
+/// 'HanjaMap'은 한자 유니코드 값과 한글 유니코드 값을 매핑하여 한자를 한글로 변경할 수 있습니다.
 open class HanjaMap {
-    // http://kangwoo.tistory.com/33
+    // http://kangwoo.tistory.com/33 를 참고하여 만들었습니다.
+    // 매핑 배열이 너무 큰 경우 Xcode가 매우 느려지는 현상 때문에 여러개로 분해했습니다.
     
     private class MapInfo {
         public var firstChar:UInt32 // type of UnicodeScalar.value
         public var chars:[UInt32]
         
         public init(firstChar:UInt32, chars:[UInt32]) {
-            self.firstChar = firstChar;
-            self.chars = chars;
+            self.firstChar = firstChar
+            self.chars = chars
         }
     }
     
@@ -53,17 +53,22 @@ open class HanjaMap {
         CJK_Ideographs21,
         ]
     
+    /// 처리할 수 있는 범위의 한자 코드인지 여부를 확인합니다.
     public static func canHandle(_ ch : UnicodeScalar) -> Bool {
         let unicode = ch.value
         for mapInfo in mapInfos {
             if (unicode >= mapInfo.firstChar && unicode < (mapInfo.firstChar + UInt32(mapInfo.chars.count))) {
-                return true;
+                return true
             }
         }
         
-        return false;
+        return false
     }
     
+    /// 한자 유니코드를 한글 유니코드로 변환합니다.
+    ///
+    /// - Parameter ch: 변환할 한자 유니코드.
+    /// - Returns: 변환된 한글 유니코드. 처리할 수 있는 한자 범위가 아닌 경우는 원래 값을 그대로 리턴합니다.
     public static func toHangul(_ ch : UnicodeScalar) -> UnicodeScalar{
         let unicode = ch.value
         for mapInfo in mapInfos {
@@ -77,6 +82,7 @@ open class HanjaMap {
         return ch
     }
     
+    /// 한자 문자열을 한글로 변경하여 리턴합니다. 한자외 다른 문자들은 그대로 유지합니다.
     public static func toHangul(_ str : String) -> String{
         var result:String = ""
         

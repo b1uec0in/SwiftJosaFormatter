@@ -25,6 +25,9 @@ extension String {
         return self.indexOf(String(ch))
     }
     
+    public func indexOf(_ ch: UnicodeScalar) -> Int {
+        return self.indexOf(String(ch))
+    }
     public var length : Int {
         get {
             return self.characters.count
